@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>Mathematics Academic Hub</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#101827">
+
+<style>
+:root{--bg:#0b1220;--panel:#121d2e;--panel2:#19263a;--text:#edf3fb;--muted:#9aabc1;--line:#2a3a50;--accent:#67d5ad;--accent2:#8ab4ff;--danger:#ff8e8e}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#0b1220,#101b2c 55%,#0c1523);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:24px 18px 18px;max-width:1100px;margin:auto}h1{font-size:clamp(25px,5vw,36px);margin:0 0 4px;letter-spacing:-.8px}.sub{color:var(--muted);font-size:13px}
+main{max-width:1100px;margin:auto;padding:0 14px 35px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0 18px}.stat,.panel{background:rgba(18,29,46,.94);border:1px solid var(--line);border-radius:16px;padding:15px}.stat b{font-size:25px;display:block}.stat span{font-size:12px;color:var(--muted)}
+nav{display:flex;gap:7px;overflow:auto;padding:5px 0 14px;position:sticky;top:0;background:rgba(11,18,32,.94);z-index:5}
+nav button,.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:10px 13px;border-radius:11px;font-weight:650;cursor:pointer;white-space:nowrap}
+nav button.active,.btn.primary{background:var(--accent);color:#082018;border-color:var(--accent)}
+.btn.danger{color:var(--danger)}button:focus,input:focus,select:focus{outline:2px solid var(--accent2);outline-offset:2px}
+.view{display:none}.view.active{display:block}.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}.panel h2{font-size:18px;margin:0 0 12px}.muted{color:var(--muted)}.course{padding:11px 0;border-bottom:1px solid var(--line)}.course:last-child{border:0}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.small{font-size:12px;color:var(--muted)}
+.progress{height:8px;background:#26364b;border-radius:20px;overflow:hidden;margin-top:8px}.progress i{height:100%;display:block;background:var(--accent);border-radius:20px}
+form{display:grid;gap:9px}label{font-size:12px;color:var(--muted);display:block;margin-bottom:3px}input,select{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:#0d1726;color:var(--text);font:inherit}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:9px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.listitem{border-bottom:1px solid var(--line);padding:11px 0}.listitem:last-child{border:0}.pill{font-size:11px;border:1px solid var(--line);border-radius:20px;padding:3px 8px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:600}
+.check{display:flex;align-items:center;gap:9px;margin:10px 0}.check input{width:auto;accent-color:var(--accent)}
+.empty{padding:20px;text-align:center;color:var(--muted)}.note{background:#172b32;border:1px solid #285748;color:#b8efda;border-radius:12px;padding:11px;font-size:12px}
+footer{max-width:1100px;margin:10px auto 25px;padding:0 14px;color:var(--muted);font-size:11px}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.stat{padding:12px}.stat b{font-size:22px}}
+</style>
+</head>
+<body>
+<header><h1>Mathematics Academic Hub</h1><div class="sub">Sukkur IBA · BS Mathematics · Semester 1 · Fall 2026</div><div style="margin-top:12px"><button class="btn primary" id="installApp" hidden>Install app</button> <span class="small" id="installHint">Use your browser menu to install or add this app to your home screen.</span></div></header>
+<main>
+<section class="stats">
+ <div class="stat"><b id="creditCount">17</b><span>Credit hours</span></div>
+ <div class="stat"><b id="courseCount">7</b><span>Courses</span></div>
+ <div class="stat"><b id="markCount">5</b><span>Assessment records</span></div>
+ <div class="stat"><b id="taskCount">0</b><span>Open tasks</span></div>
+</section>
+<nav>
+<button class="active" data-tab="overview">Overview</button><button data-tab="marks">Marks</button><button data-tab="deadlines">Deadlines</button><button data-tab="study">Study tracker</button><button data-tab="gpa">GPA tracker</button><button data-tab="schedule">Timetable</button><button data-tab="backup">Backup</button>
+</nav>
+<section id="overview" class="view active">
+ <div class="grid">
+  <div class="panel"><h2>Semester snapshot</h2><div class="row"><span class="muted">Recorded assessment average</span><strong id="avg">—</strong></div><div class="progress"><i id="avgBar" style="width:0%"></i></div><p class="small">Calculated only from assessments entered so far. This is not your semester percentage or official CGPA.</p><div id="courseSummary"></div></div>
+  <div class="panel"><h2>Academic focus</h2><p class="muted">Your target GPA</p><div class="row"><strong style="font-size:28px" id="targetDisplay">3.50 / 4.00</strong><span class="pill">Personal goal</span></div><p class="small">Set your goal in the GPA Tracker. Official grade boundaries are not assumed.</p><div class="note">Keep every result updated. Blank assessments remain blank—not zero.</div></div>
+ </div>
+ <div class="panel" style="margin-top:14px"><h2>Next tasks</h2><div id="nextTasks" class="muted">No deadlines added yet.</div></div>
+</section>
+<section id="marks" class="view">
+ <div class="grid">
+  <div class="panel"><h2>Add assessment result</h2><form id="markForm">
+   <div><label>Course</label><select id="mCourse"></select></div>
+   <div class="fields"><div><label>Assessment</label><select id="mType"><option>Midterm</option><option>Sessional</option><option>Final</option><option>Viva</option><option>Quiz</option><option>Assignment</option><option>Other</option></select></div><div><label>Maximum marks</label><input id="mMax" type="number" min="0.01" step="any" value="30" required></div></div>
+   <div><label>Marks obtained</label><input id="mScore" type="number" min="0" step="any" placeholder="e.g. 24" required></div>
+   <button class="btn primary" type="submit">Save result</button>
+  </form></div>
+  <div class="panel"><h2>Assessment records</h2><div id="markList"></div></div>
+ </div>
+</section>
+<section id="deadlines" class="view">
+ <div class="grid">
+  <div class="panel"><h2>Add deadline</h2><form id="taskForm">
+   <div><label>Task title</label><input id="tTitle" placeholder="e.g. QR-I Quiz 2" required></div>
+   <div><label>Course</label><select id="tCourse"></select></div>
+   <div class="fields"><div><label>Type</label><select id="tType"><option>Assignment</option><option>Quiz</option><option>Presentation</option><option>Midterm</option><option>Final</option><option>Project</option><option>Other</option></select></div><div><label>Due date</label><input id="tDate" type="date" required></div></div>
+   <button class="btn primary" type="submit">Add to planner</button>
+  </form></div>
+  <div class="panel"><h2>Your task list</h2><div id="taskList"></div></div>
+ </div>
+</section>
+<section id="study" class="view">
+ <div class="panel"><h2>Daily study checklist</h2><p class="small">Checklist resets for a new calendar day; your past task and mark records remain saved.</p><div id="studyList"></div><div class="progress"><i id="studyBar" style="width:0%"></i></div><p id="studyProgress" class="small"></p></div>
+ <div class="panel" style="margin-top:14px"><h2>Weekly development</h2><div class="course"><b>Saturday · 4:30–5:30 PM</b><div class="small">Chess calculation · English · Mathematical thinking</div></div><div class="course"><b>Sunday · 4:30–5:15 PM</b><div class="small">Weekly academic review and planning</div></div></div>
+</section>
+<section id="gpa" class="view">
+ <div class="grid">
+  <div class="panel"><h2>GPA goal</h2><label>Target GPA (out of 4.00)</label><input id="gpaTarget" type="number" min="0" max="4" step=".01" value="3.50"><p class="small">A target only; it does not calculate your official CGPA.</p></div>
+  <div class="panel"><h2>Course grade points</h2><p class="small">After final results, enter the grade point awarded by IBA for each course. This tracker uses the credit-weighted formula.</p><div id="gradeInputs"></div><div class="row" style="margin-top:12px"><span>Estimated GPA from entered grade points</span><strong id="gpaResult">—</strong></div></div>
+ </div>
+ <p class="note" style="margin-top:14px">No IBA grade conversion scale is built in. Enter official grade points only after confirming them from the university.</p>
+</section>
+<section id="schedule" class="view">
+ <div class="panel"><h2>Weekly class timetable</h2><table><thead><tr><th>Day</th><th>Time</th><th>Class</th></tr></thead><tbody>
+ <tr><td>Monday</td><td>8 AM–12 PM</td><td>Functional English</td></tr><tr><td>Monday</td><td>2–5 PM</td><td>Mathematical Thinking</td></tr>
+ <tr><td>Tuesday</td><td>8 AM–12 PM</td><td>Quantitative Reasoning I</td></tr><tr><td>Tuesday</td><td>2–5 PM</td><td>ICT Lab</td></tr>
+ <tr><td>Wednesday</td><td>8–10:40 AM</td><td>Islamiat</td></tr><tr><td>Thursday</td><td>8 AM–12 PM</td><td>Calculus I</td></tr><tr><td>Friday</td><td>11 AM–1 PM</td><td>ICT Theory</td></tr>
+ </tbody></table><p class="small">Class schedule based on the details you provided. Update it if your university changes a slot.</p></div>
+</section>
+<section id="backup" class="view">
+ <div class="panel"><h2>Data backup & restore</h2><p class="muted">Your data is saved in this browser on this device. Export a backup regularly, especially before clearing browser data or changing phones.</p><div class="actions"><button class="btn primary" id="exportBtn">Export backup (.json)</button><label class="btn" for="importFile" style="cursor:pointer">Import backup</label><input id="importFile" type="file" accept="application/json" style="display:none"></div><p class="small">This is a standalone local app. It does not sync with IBA CMS or Google Calendar.</p></div>
+</section>
+</main>
+<footer>Mathematics Academic Hub · Data stays in this browser unless you export it. Keep a backup file somewhere safe.</footer>
+<script>
+const courses=[
+ {name:"Calculus I",credits:3},{name:"Mathematical Thinking",credits:3},{name:"Quantitative Reasoning I",credits:3},{name:"Functional English",credits:3},{name:"ICT Theory",credits:2},{name:"ICT Lab",credits:1},{name:"Islamiat",credits:2}
+];
+const seedMarks=[
+ {id:1,course:"Islamiat",type:"Midterm",score:30,max:30},
+ {id:2,course:"Mathematical Thinking",type:"Midterm",score:18.6,max:30},
+ {id:3,course:"ICT Theory",type:"Midterm",score:26.25,max:30},
+ {id:4,course:"Quantitative Reasoning I",type:"Midterm",score:21,max:30},
+ {id:5,course:"ICT Lab",type:"Midterm",score:10,max:15}
+];
+const defaults={marks:seedMarks,tasks:[],target:3.5,gradePoints:{},study:{date:new Date().toLocaleDateString(),checks:[false,false,false,false]}};
+let data;
+try{data=JSON.parse(localStorage.getItem("mathHubData"))||structuredClone(defaults)}catch(e){data=structuredClone(defaults)}
+function save(){localStorage.setItem("mathHubData",JSON.stringify(data));render()}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function fillSelect(id){document.getElementById(id).innerHTML=courses.map(c=>`<option>${esc(c.name)}</option>`).join("")}
+fillSelect("mCourse");fillSelect("tCourse");
+document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.tab).classList.add("active")}));
+document.getElementById("markForm").addEventListener("submit",e=>{e.preventDefault();let score=Number(mScore.value),max=Number(mMax.value);if(!Number.isFinite(score)||!Number.isFinite(max)||max<=0||score<0||score>max){alert("Score must be between 0 and the maximum.");return}data.marks.push({id:Date.now(),course:mCourse.value,type:mType.value,score,max});e.target.reset();mMax.value=30;save()});
+document.getElementById("taskForm").addEventListener("submit",e=>{e.preventDefault();data.tasks.push({id:Date.now(),title:tTitle.value.trim(),course:tCourse.value,type:tType.value,date:tDate.value,done:false});e.target.reset();save()});
+function render(){
+ const total=data.marks.reduce((a,m)=>a+m.score,0),max=data.marks.reduce((a,m)=>a+m.max,0),pct=max?100*total/max:0;
+ creditCount.textContent=courses.reduce((a,c)=>a+c.credits,0);courseCount.textContent=courses.length;markCount.textContent=data.marks.length;taskCount.textContent=data.tasks.filter(t=>!t.done).length;
+ avg.textContent=max?pct.toFixed(1)+"%":"—";avgBar.style.width=pct+"%";targetDisplay.textContent=Number(data.target).toFixed(2)+" / 4.00";gpaTarget.value=data.target;
+ courseSummary.innerHTML=courses.map(c=>{let ms=data.marks.filter(m=>m.course===c.name),s=ms.reduce((a,m)=>a+m.score,0),x=ms.reduce((a,m)=>a+m.max,0);return `<div class="course"><div class="row"><b>${esc(c.name)}</b><span class="small">${c.credits} credits</span></div><div class="small">${ms.length?`${s.toFixed(2)} / ${x} recorded · ${(100*s/x).toFixed(1)}%`:"No marks recorded"}</div></div>`}).join("");
+ markList.innerHTML=data.marks.length?data.marks.slice().reverse().map(m=>`<div class="listitem"><div class="row"><b>${esc(m.course)}</b><button class="btn danger" onclick="deleteMark(${m.id})">Delete</button></div><div class="small">${esc(m.type)} · ${m.score}/${m.max} (${(100*m.score/m.max).toFixed(1)}%)</div></div>`).join(""):'<div class="empty">No assessment records yet.</div>';
+ const sorted=data.tasks.slice().sort((a,b)=>a.date.localeCompare(b.date));
+ taskList.innerHTML=sorted.length?sorted.map(t=>`<div class="listitem"><div class="row"><label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" ${t.done?"checked":""} onchange="toggleTask(${t.id},this.checked)">${esc(t.title)}</label><button class="btn danger" onclick="deleteTask(${t.id})">×</button></div><div class="small">${esc(t.course)} · ${esc(t.type)} · ${esc(t.date)} · ${t.done?"Completed":daysLeft(t.date)}</div></div>`).join(""):'<div class="empty">No deadlines added yet.</div>';
+ const open=sorted.filter(t=>!t.done).slice(0,4);nextTasks.innerHTML=open.length?open.map(t=>`<div class="listitem"><b>${esc(t.title)}</b><div class="small">${esc(t.course)} · ${esc(t.date)} · ${daysLeft(t.date)}</div></div>`).join(""):'No open tasks. Add deadlines in the planner.';
+ if(data.study.date!==new Date().toLocaleDateString())data.study={date:new Date().toLocaleDateString(),checks:[false,false,false,false]};
+ const labels=["Attend classes and record key concepts","Complete focused mathematics practice","Revise today's lecture within 24 hours","Review mistakes and prepare tomorrow's tasks"];
+ studyList.innerHTML=labels.map((x,i)=>`<label class="check"><input type="checkbox" ${data.study.checks[i]?"checked":""} onchange="studyCheck(${i},this.checked)">${x}</label>`).join("");
+ let n=data.study.checks.filter(Boolean).length;studyProgress.textContent=`${n} of 4 activities completed today`;studyBar.style.width=(n/4*100)+"%";
+ gradeInputs.innerHTML=courses.map(c=>`<div class="course"><div class="row"><label>${esc(c.name)} · ${c.credits} credits</label><input aria-label="${esc(c.name)} grade point" style="max-width:100px" type="number" min="0" max="4" step=".01" placeholder="—" value="${data.gradePoints[c.name]??""}" onchange="setGP('${esc(c.name)}',this.value)"></div></div>`).join("");
+ let valid=courses.filter(c=>data.gradePoints[c.name]!==undefined&&data.gradePoints[c.name]!==""&&Number.isFinite(Number(data.gradePoints[c.name]))&&Number(data.gradePoints[c.name])>=0&&Number(data.gradePoints[c.name])<=4);
+ let cr=valid.reduce((a,c)=>a+c.credits,0),pts=valid.reduce((a,c)=>a+c.credits*Number(data.gradePoints[c.name]),0);gpaResult.textContent=cr?(pts/cr).toFixed(2)+" (partial)":"—";
+}
+function daysLeft(d){let n=Math.ceil((new Date(d+"T00:00:00")-new Date(new Date().toDateString()))/86400000);return n<0?`${-n} day(s) overdue`:n===0?"Due today":`${n} day(s) left`}
+function deleteMark(id){if(confirm("Delete this assessment record?")){data.marks=data.marks.filter(x=>x.id!==id);save()}}
+function deleteTask(id){if(confirm("Delete this task?")){data.tasks=data.tasks.filter(x=>x.id!==id);save()}}
+function toggleTask(id,v){data.tasks=data.tasks.map(t=>t.id===id?{...t,done:v}:t);save()}
+function studyCheck(i,v){data.study.checks[i]=v;save()}
+function setGP(name,v){if(v==="")delete data.gradePoints[name];else if(Number(v)>=0&&Number(v)<=4)data.gradePoints[name]=Number(v);save()}
+gpaTarget.addEventListener("change",()=>{let v=Number(gpaTarget.value);if(v>=0&&v<=4){data.target=v;save()}else alert("Enter a target between 0 and 4.")});
+exportBtn.addEventListener("click",()=>{let blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="Mathematics_Academic_Hub_Backup.json";a.click();URL.revokeObjectURL(url)});
+importFile.addEventListener("change",async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!Array.isArray(x.marks)||!Array.isArray(x.tasks))throw Error();data={...defaults,...x};save();alert("Backup restored.")}catch(err){alert("That backup file is not valid for this app.")}e.target.value=""});
+render();
+</script>
+
+<script>
+let deferredInstallPrompt = null;
+const installButton = document.getElementById("installApp");
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  installButton.hidden = false;
+  document.getElementById("installHint").textContent = "Install this app on your device.";
+});
+installButton.addEventListener("click", async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  installButton.hidden = true;
+});
+window.addEventListener("appinstalled", () => {
+  installButton.hidden = true;
+  document.getElementById("installHint").textContent = "App installed successfully.";
+});
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+}
+</script>
+
+</body></html>
